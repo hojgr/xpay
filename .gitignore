@@ -1,2 +1,5 @@
 .idea
 phpunit.phar
+/vendor/
+composer.phar
+composer.lock
