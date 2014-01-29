@@ -17,7 +17,7 @@ class XpaySmsDispatcher extends Object {
         $this->processors[$regex] = $processor;
     }
 
-    public function process(PaymentEntity $paymentEntity) {
+    public function process(XpayMessageEntity $paymentEntity) {
         foreach($this->getProcessors() as $regexp => $processor) {
             $success = preg_match_all("~" . preg_replace("/~/", "\\~", $regexp) . "~", $paymentEntity->getModified(), $matches);
 

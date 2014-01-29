@@ -3,7 +3,7 @@
 
 namespace tests;
 
-use Hicoria\Xpay\PaymentEntity;
+use Hicoria\Xpay\XpayMessageEntity;
 use Hicoria\Xpay\XpaySmsDispatcher;
 
 class XpaySmsDispatcherTest extends \PHPUnit_Framework_TestCase {
@@ -41,7 +41,7 @@ class XpaySmsDispatcherTest extends \PHPUnit_Framework_TestCase {
             ->method("getProcessors")
             ->will($this->returnValue(['keyword ([0-9]+)' => $processor_mock]));
 
-        $result = $xpaySmsDispatcher->process(new PaymentEntity());
+        $result = $xpaySmsDispatcher->process(new XpayMessageEntity());
 
         $this->assertSame(0, $result);
     }
@@ -67,6 +67,6 @@ class XpaySmsDispatcherTest extends \PHPUnit_Framework_TestCase {
             ->method("getProcessors")
             ->will($this->returnValue(['keyword ~([0-9]+)' => $processor_mock]));
 
-        $xpaySmsDispatcher->process(new PaymentEntity());
+        $xpaySmsDispatcher->process(new XpayMessageEntity());
     }
 } 

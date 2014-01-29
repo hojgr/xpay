@@ -6,7 +6,7 @@ namespace Hicoria\Xpay;
 
 use Nette\Object;
 
-class PaymentEntity extends Object
+class XpayMessageEntity extends Object
 {
     /**
      * Jedinečný identifikátor transakce
