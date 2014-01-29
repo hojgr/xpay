@@ -6,5 +6,5 @@ namespace Hicoria\Xpay;
 
 interface IMessageProcessor {
     public function getRegexp();
-    public function process($args);
+    public function process(array $args);
 }
