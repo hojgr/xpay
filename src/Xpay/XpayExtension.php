@@ -10,7 +10,6 @@ use Nette\PhpGenerator\ClassType;
 class XpayExtension extends CompilerExtension {
     public function loadConfiguration()
     {
-        $config = $this->getConfig();
         $builder = $this->getContainerBuilder();
 
         $builder->addDefinition($this->prefix('xpaySmsDispatcher'))
@@ -22,10 +21,6 @@ class XpayExtension extends CompilerExtension {
      * @param ClassType $class
      */
     public function afterCompile(ClassType $class) {
-        /**
-         * @var IMessageProcessor $tagged
-         */
-
         $initialize = $class->methods['initialize'];
         $containerBuilder = $this->getContainerBuilder();
 
