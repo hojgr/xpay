@@ -12,7 +12,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Hicoria\\Xpay": "src/"
+            "Hicoria\\Xpay\\": "src/Xpay/"
         }
     }
 }
