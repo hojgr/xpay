@@ -11,7 +11,8 @@ class XpayRequestParser extends Object {
         $entity = new XpayMessageEntity();
 
         foreach($arr as $index => $contents) {
-            $entity->$index = $contents;
+            if(property_exists($entity, $index))
+                $entity->$index = $contents;
         }
 
         return $entity;
