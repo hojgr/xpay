@@ -1,5 +1,6 @@
 {
     "name": "teb/xpay",
+    "license": "MIT",
     "authors": [
         {
             "name": "Michal Hojgr",
