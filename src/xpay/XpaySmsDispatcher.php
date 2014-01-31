@@ -21,8 +21,8 @@ class XpaySmsDispatcher extends Object {
         foreach($this->getProcessors() as $regexp => $processor) {
             $success = preg_match_all("~" . preg_replace("/~/", "\\~", $regexp) . "~", $paymentEntity->getModified(), $matches);
 
-            // drop first element - we want matches in parentheses
-            array_shift($matches);
+            // matched string is not required
+            $matches = $matches[1];
 
             // continue for both, error and no match
             if(!$success)
