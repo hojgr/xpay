@@ -29,7 +29,7 @@ class XpaySmsDispatcher extends Object {
                 return $success;
 
             $processor->process($paymentEntity, $matches);
-
+            $processor->getResponse()->sendResponse();
             break;
         }
 
