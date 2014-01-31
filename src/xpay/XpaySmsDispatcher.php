@@ -28,7 +28,7 @@ class XpaySmsDispatcher extends Object {
             if(!$success)
                 return $success;
 
-            $processor->process($matches);
+            $processor->process($paymentEntity, $matches);
 
             break;
         }
