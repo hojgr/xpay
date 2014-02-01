@@ -28,6 +28,9 @@ class XpaySmsDispatcher extends Object {
             if(!$success)
                 continue;
 
+            // drop first element - we want matches in parentheses
+            array_shift($matches);
+
             $processor->process($paymentEntity, $matches);
             $processor->getResponse()->sendResponse();
             break;
