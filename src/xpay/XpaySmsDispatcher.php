@@ -13,7 +13,7 @@ class XpaySmsDispatcher extends Object {
      */
     private $processors = [];
 
-    public function register($regex, IMessageProcessor $processor) {
+    public function register(IMessageProcessor $processor) {
         $this->processors[] = $processor;
     }
 
@@ -26,7 +26,7 @@ class XpaySmsDispatcher extends Object {
     public function process(XpayMessageEntity $paymentEntity) {
         foreach($this->getProcessors() as $processor) {
             $success = preg_match(
-                "~" . preg_replace("/~/", "\\~", $processor->getResponse()) . "~i",
+                "~" . preg_replace("/~/", "\\~", $processor->getRegexp()) . "~i",
                 trim($paymentEntity->getModified()),
                 $matches);
 

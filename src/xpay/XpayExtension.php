@@ -28,10 +28,9 @@ class XpayExtension extends CompilerExtension {
 
         foreach($containerBuilder->findByTag("xpaySmsProcessor") as $index => $value) {
             $initialize->addBody(
-                '$this->getService(?)->register($this->getService(?)->getRegexp(), $this->getService(?));',
+                '$this->getService(?)->register($this->getService(?));',
                 array(
                     $dispatcher_name,
-                    $index,
                     $index
                 )
             );
