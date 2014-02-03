@@ -36,5 +36,7 @@ class XpayExtension extends CompilerExtension {
                 )
             );
         }
+
+        $initialize->addBody('$this->getService(?)->sortByPriority();', array($dispatcher_name));
     }
 } 

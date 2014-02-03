@@ -3,6 +3,8 @@
 
 namespace tests;
 
+use Hicoria\Xpay\IMessageProcessor;
+use Hicoria\Xpay\response\IXpayResponse;
 use Hicoria\Xpay\XpayMessageEntity;
 use Hicoria\Xpay\XpaySmsDispatcher;
 
@@ -19,7 +21,7 @@ class XpaySmsDispatcherTest extends \PHPUnit_Framework_TestCase {
 
     public function testRegister() {
         $mock = $this->getMockBuilder("Hicoria\\Xpay\\IMessageProcessor")
-            ->setMethods(["process"])
+            ->setMethods(["process", "getRegexp", "getPriority", "getResponse"])
             ->getMock();
 
         $this->xpayDispatcher->register("csmc ([a-z]+)", $mock);
@@ -34,7 +36,7 @@ class XpaySmsDispatcherTest extends \PHPUnit_Framework_TestCase {
             ->getMock();
 
         $processor_mock = $this->getMockBuilder("Hicoria\\Xpay\\IMessageProcessor")
-            ->setMethods(["process"])
+            ->setMethods(["process", "getRegexp", "getPriority", "getResponse"])
             ->getMock();
 
         $xpaySmsDispatcher->expects($this->once())
@@ -43,7 +45,7 @@ class XpaySmsDispatcherTest extends \PHPUnit_Framework_TestCase {
 
         $result = $xpaySmsDispatcher->process(new XpayMessageEntity());
 
-        $this->assertSame(0, $result);
+        $this->assertSame(true, $result);
     }
 
     /**
@@ -60,7 +62,7 @@ class XpaySmsDispatcherTest extends \PHPUnit_Framework_TestCase {
             ->getMock();
 
         $processor_mock = $this->getMockBuilder("Hicoria\\Xpay\\IMessageProcessor")
-            ->setMethods(["process"])
+            ->setMethods(["process", "getRegexp", "getPriority", "getResponse"])
             ->getMock();
 
         $xpaySmsDispatcher->expects($this->once())
@@ -69,4 +71,43 @@ class XpaySmsDispatcherTest extends \PHPUnit_Framework_TestCase {
 
         $xpaySmsDispatcher->process(new XpayMessageEntity());
     }
-} 
+
+    public function testPriority() {
+        $testProcessors = [];
+        $testProcessors[] = new PriorityTestClassA(1);
+        $testProcessors[] = new PriorityTestClassA(999);
+        $testProcessors[] = new PriorityTestClassA(80);
+        $testProcessors[] = new PriorityTestClassA(20);
+        $testProcessors[] = new PriorityTestClassA(2000);
+
+        $dispatcher = new XpaySmsDispatcher();
+        $refDispatcher = new \ReflectionObject($dispatcher);
+        $refProperty = $refDispatcher->getProperty('processors');
+        $refProperty->setAccessible(true);
+        $refProperty->setValue($dispatcher, $testProcessors);
+
+        $dispatcher->sortByPriority();
+
+        $this->assertSame(2000, $refProperty->getValue($dispatcher)[0]->getPriority());
+        $this->assertSame(999, $refProperty->getValue($dispatcher)[1]->getPriority());
+        $this->assertSame(80, $refProperty->getValue($dispatcher)[2]->getPriority());
+        $this->assertSame(20, $refProperty->getValue($dispatcher)[3]->getPriority());
+        $this->assertSame(1, $refProperty->getValue($dispatcher)[4]->getPriority());
+    }
+}
+
+class PriorityTestClassA implements IMessageProcessor {
+
+    public $priority;
+
+    public function __construct($p) {
+        $this->priority = $p;
+    }
+
+    public function getPriority(){
+        return $this->priority;
+    }
+    public function getRegexp(){}
+    public function process(XpayMessageEntity $xpayMessageEntity, array $args){}
+    public function getResponse(){}
+}

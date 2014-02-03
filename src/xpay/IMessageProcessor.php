@@ -8,6 +8,7 @@ use Hicoria\Xpay\response\IXpayResponse;
 
 interface IMessageProcessor {
     public function getRegexp();
+    public function getPriority();
     public function process(XpayMessageEntity $xpayMessageEntity, array $args);
 
     /**

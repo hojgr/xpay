@@ -17,6 +17,12 @@ class XpaySmsDispatcher extends Object {
         $this->processors[$regex] = $processor;
     }
 
+    public function sortByPriority() {
+        usort($this->processors, function($a, $b) {
+            return $b->getPriority() - $a->getPriority();
+        });
+    }
+
     public function process(XpayMessageEntity $paymentEntity) {
         foreach($this->getProcessors() as $regexp => $processor) {
             $success = preg_match(
