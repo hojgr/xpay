@@ -4,6 +4,7 @@
 namespace Hicoria\Xpay;
 
 
+use Hicoria\Xpay\response\XpayResponse;
 use Nette\Object;
 
 class XpaySmsDispatcher extends Object {
@@ -24,24 +25,29 @@ class XpaySmsDispatcher extends Object {
     }
 
     public function process(XpayMessageEntity $paymentEntity) {
-        foreach($this->getProcessors() as $processor) {
-            $success = preg_match(
-                "~" . preg_replace("/~/", "\\~", $processor->getRegexp()) . "~i",
-                trim($paymentEntity->getRaw()),
-                $matches);
+        if(in_array($paymentEntity->getTransactionId(), ["delivered", "undelivered"])) {
+            $response = new XpayResponse(XpayResponse::TYPE_ANSWER, sprintf("Vase SMS nemohla byt zpracovana. Kontaktujte podporu hostingu Hicoria.com s kodem: %s", $paymentEntity->getPassword()));
+            $response->sendResponse();
 
-            // continue for both, error and no match
-            if(!$success)
-                continue;
+        } else {
+            foreach($this->getProcessors() as $processor) {
+                $success = preg_match(
+                    "~" . preg_replace("/~/", "\\~", $processor->getRegexp()) . "~i",
+                    trim($paymentEntity->getRaw()),
+                    $matches);
 
-            // drop first element - we want matches in parentheses
-            array_shift($matches);
+                // continue for both, error and no match
+                if(!$success)
+                    continue;
 
-            $processor->process($paymentEntity, $matches);
-            $processor->getResponse()->sendResponse();
-            break;
+                // drop first element - we want matches in parentheses
+                array_shift($matches);
+
+                $processor->process($paymentEntity, $matches);
+                $processor->getResponse()->sendResponse();
+                break;
+            }
         }
-
         return true;
     }
 
